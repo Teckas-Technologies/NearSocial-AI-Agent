@@ -61,7 +61,7 @@ router.post("/", async (req, res) => {
         };
 
         const storage = await getAvailableStorage(account);
-        const availableBytes = Big(storage.available_bytes || '0');
+        const availableBytes = Big(storage?.available_bytes || '0');
 
         let currentData = {};
         // if (availableBytes < 0) {
