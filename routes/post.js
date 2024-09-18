@@ -2,7 +2,14 @@ const express = require('express');
 const router = express.Router();
 const { format } = require('near-api-js').utils;
 const { uploadIPFS } = require('../utils/imageUtils');
-const { getAvailableStorage, calculateTextSizeInBytes, calculateNearAmount } = require('../utils/utils');
+const { getAvailableStorage, calculateTextSizeInBytes,StorageCostPerByte, estimateDataSize, calculateNearAmount } = require('../utils/utils');
+const Big = require('big.js');
+
+const MinStorageBalance = StorageCostPerByte.mul(2000);
+const InitialAccountStorageBalance = StorageCostPerByte.mul(500);
+const ExtraStorageBalance = StorageCostPerByte.mul(500);
+const StorageForPermission = StorageCostPerByte.mul(500);
+const CustomStorage = StorageCostPerByte.mul(500);
 
 router.post("/", async (req, res) => {
     try {
@@ -48,22 +55,28 @@ router.post("/", async (req, res) => {
             },
         };
 
-        // const mainValueSize = calculateTextSizeInBytes(data[accountId].post.main);
-        // const indexPostValueSize = calculateTextSizeInBytes(data[accountId].index.post);
-        const contentSize = calculateTextSizeInBytes(content);
-        const imageSize = calculateTextSizeInBytes(imageCid);
-        const accountSize = calculateTextSizeInBytes(account);
+        const storage = await getAvailableStorage(account);
+        const availableBytes = Big(storage?.available_bytes || '0');
 
-        const totalSize = contentSize + imageSize + accountSize;
+        let currentData = {};
 
-        const availableStorage = await getAvailableStorage(account);
-        const availableBytes = availableStorage?.available_bytes || 0;
+        const expectedDataBalance = StorageCostPerByte?.mul(
+            estimateDataSize(data, currentData)
+        )
+            .add(storage ? Big(0) : InitialAccountStorageBalance)
+            .add(true ? Big(0) : StorageForPermission)
+            .add(ExtraStorageBalance)
+            .add(CustomStorage);
+
+        const totalSize = (expectedDataBalance?.toFixed() * 100000 / 10 ** 24).toFixed()
+
         let amount = 0;
         if (totalSize > availableBytes) {
             // Calculate NEAR amount if the total size exceeds the available storage
             const extraSize = totalSize - availableBytes;
             amount = calculateNearAmount(extraSize);
         }
+        console.log(`amt:${amount},size:${totalSize},availBytes:${availableBytes},data:${JSON.stringify(data)},`);
 
         const contractId = "social.near";
         const method = 'set';
@@ -90,10 +103,10 @@ router.post("/", async (req, res) => {
         const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${account}`);
 
         console.log("Transaction Data: ", transactionData);
-        console.log("Transactions Data Encoded: ", transactionsData);
         console.log("Callback URL: ", callbackUrl);
 
         const postUrl = `https://wallet.bitte.ai/sign-transaction?transactions_data=${transactionsData}&callback_url=${callbackUrl}`;
+        console.log("Post Url: ", decodeURIComponent(postUrl));
         res.json({ postUrl: postUrl });
 
     } catch (error) {

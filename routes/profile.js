@@ -70,7 +70,7 @@ router.post("/", async (req, res) => {
         //     data = removeDuplicates(data, currentData);
         // }
 
-        const expectedDataBalance = StorageCostPerByte.mul(
+        const expectedDataBalance = StorageCostPerByte?.mul(
             estimateDataSize(data, currentData)
         )
             .add(storage ? Big(0) : InitialAccountStorageBalance)
@@ -82,7 +82,7 @@ router.post("/", async (req, res) => {
             !storage ? MinStorageBalance : true ? Big(0) : Big(1)
         );
 
-        const dataSize = (expectedDataBalance.toFixed() * 100000 / 10 ** 24).toFixed()
+        const dataSize = (expectedDataBalance?.toFixed() * 100000 / 10 ** 24).toFixed()
 
         let amount = 0;
         if (dataSize > availableBytes) {
@@ -90,6 +90,7 @@ router.post("/", async (req, res) => {
             console.log("Extra Size >> ", extraSize);
             amount = calculateNearAmount(extraSize);
         }
+        console.log(`amt:${amount},size:${dataSize},availBytes:${availableBytes},data:${JSON.stringify(data)},`);
 
         const contractId = "social.near";
         const method = 'set';
@@ -113,10 +114,10 @@ router.post("/", async (req, res) => {
         const transactionsData = encodeURIComponent(JSON.stringify(transactionData));
         const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${account}`);
         console.log("Transaction Data: ", transactionData);
-        console.log("Transactions Data Encoded: ", transactionsData);
         console.log("Callback URL: ", callbackUrl);
 
         const signUrl = `https://wallet.bitte.ai/sign-transaction?transactions_data=${transactionsData}&callback_url=${callbackUrl}`;
+        console.log("Sign Url: ", decodeURIComponent(signUrl));
 
         return res.status(200).json({ profileUrl: signUrl });
 
