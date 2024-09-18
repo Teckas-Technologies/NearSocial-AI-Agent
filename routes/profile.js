@@ -88,7 +88,7 @@ router.post("/", async (req, res) => {
             amount = calculateNearAmount(extraSize);
         }
 
-        const contractId = process.env.NEAR_SOCIAL_DB_CONTRACT_ID;
+        const contractId = "social.near";
         const method = 'set';
         const args = { data: data };
         const gas = '30000000000000';

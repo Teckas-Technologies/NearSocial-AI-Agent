@@ -14,7 +14,7 @@ const getAvailableStorage = async (accountID, networkId = 'mainnet') => {
         const args = { account_id: accountID };
         const res = await provider.query({
             request_type: 'call_function',
-            account_id: process.env.NEAR_SOCIAL_DB_CONTRACT_ID,
+            account_id: "social.near",
             method_name: 'get_account_storage',
             args_base64: Buffer.from(JSON.stringify(args)).toString('base64'),
             finality: 'optimistic',
