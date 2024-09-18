@@ -2,9 +2,9 @@
   "name": "mintbase-ai-agent",
   "version": "1.0.0",
   "description": "AI agent for bitte wallet operations become easier",
-  "main": "app.js",
+  "main": "/api/app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon /api/app.js"
   },
   "author": "Teckas Technologies",
   "license": "ISC",
