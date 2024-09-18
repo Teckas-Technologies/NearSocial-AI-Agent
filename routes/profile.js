@@ -17,12 +17,12 @@ router.post("/", async (req, res) => {
 
         const { accountId, accountID, name, about, profileImage, bannerImage, twitter, github, telegram, website, tags } = body;
 
-        if (!accountId || !accountID || !name || !about || !tags || !profileImage || !bannerImage || !twitter || !github || !telegram || !website) {
+        const account = accountId || accountID;
+
+        if (!account || !name || !about || !tags || !profileImage || !bannerImage || !twitter || !github || !telegram || !website) {
             console.log("Missing details");
             // return res.status(400).json({ error: 'Missing details' });
         }
-
-        const account = accountId || accountID;
 
         if (tags && !Array.isArray(tags)) {
             console.log("Missing tag format");
