@@ -14,6 +14,7 @@ router.post("/", async (req, res) => {
     try {
         const body = req.body;
         console.log("body >>", body);
+        
 
         const { accountId, accountID, name, about, profileImage, bannerImage, twitter, github, telegram, website, tags } = body;
 
