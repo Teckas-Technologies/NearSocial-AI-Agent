@@ -9,8 +9,9 @@ router.post("/", async (req, res) => {
         const body = req.body;
         console.log("body >>", body);
 
-        const { accountId, content, imageUrl } = body;
-        if (!accountId || !content) {
+        const { accountId, accountID, content, imageUrl } = body;
+        const account = accountId || accountID;
+        if (!account || !content) {
             console.log("Missing accountId or content");
             return res.status(400).json({ error: "Missing accountId or content" });
         }
@@ -32,7 +33,7 @@ router.post("/", async (req, res) => {
         }
 
         const data = {
-            [accountId]: {
+            [account]: {
                 post: {
                     main: JSON.stringify(postData.main)
                 },
@@ -51,11 +52,11 @@ router.post("/", async (req, res) => {
         // const indexPostValueSize = calculateTextSizeInBytes(data[accountId].index.post);
         const contentSize = calculateTextSizeInBytes(content);
         const imageSize = calculateTextSizeInBytes(imageCid);
-        const accountSize = calculateTextSizeInBytes(accountId);
+        const accountSize = calculateTextSizeInBytes(account);
 
         const totalSize = contentSize + imageSize + accountSize;
 
-        const availableStorage = await getAvailableStorage(accountId);
+        const availableStorage = await getAvailableStorage(account);
         const availableBytes = availableStorage?.available_bytes || 0;
         let amount = 0;
         if (totalSize > availableBytes) {
@@ -86,7 +87,7 @@ router.post("/", async (req, res) => {
         }];
 
         const transactionsData = encodeURIComponent(JSON.stringify(transactionData));
-        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${accountId}`);
+        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${account}`);
 
         console.log("Transaction Data: ", transactionData);
         console.log("Transactions Data Encoded: ", transactionsData);

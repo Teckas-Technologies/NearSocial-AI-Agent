@@ -15,12 +15,14 @@ router.post("/", async (req, res) => {
         const body = req.body;
         console.log("body >>", body);
 
-        const { accountId, name, about, profileImage, bannerImage, twitter, github, telegram, website, tags } = body;
+        const { accountId, accountID, name, about, profileImage, bannerImage, twitter, github, telegram, website, tags } = body;
 
-        if (!accountId || !name || !about || !tags || !profileImage || !bannerImage || !twitter || !github || !telegram || !website) {
+        if (!accountId || !accountID || !name || !about || !tags || !profileImage || !bannerImage || !twitter || !github || !telegram || !website) {
             console.log("Missing details");
             // return res.status(400).json({ error: 'Missing details' });
         }
+
+        const account = accountId || accountID;
 
         if (tags && !Array.isArray(tags)) {
             console.log("Missing tag format");
@@ -52,12 +54,12 @@ router.post("/", async (req, res) => {
         if (tags?.length > 0) profileData.tags = formattedTags;
 
         const data = {
-            [accountId]: convertToStringLeaves({
+            [account]: convertToStringLeaves({
                 profile: profileData
             })
         };
 
-        const storage = await getAvailableStorage(accountId);
+        const storage = await getAvailableStorage(account);
         const availableBytes = Big(storage.available_bytes || '0');
 
         let currentData = {};
@@ -108,7 +110,7 @@ router.post("/", async (req, res) => {
         }];
 
         const transactionsData = encodeURIComponent(JSON.stringify(transactionData));
-        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${accountId}`);
+        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${account}`);
         console.log("Transaction Data: ", transactionData);
         console.log("Transactions Data Encoded: ", transactionsData);
         console.log("Callback URL: ", callbackUrl);
