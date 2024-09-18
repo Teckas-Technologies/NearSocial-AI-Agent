@@ -15,9 +15,9 @@ router.post("/", async (req, res) => {
         const body = req.body;
         console.log("body >>", body);
 
-        const { accountID, name, about, profileImage, bannerImage, twitter, github, telegram, website, tags } = body;
+        const { accountId, name, about, profileImage, bannerImage, twitter, github, telegram, website, tags } = body;
 
-        if (!accountID || !name || !about || !tags || !profileImage || !bannerImage || !twitter || !github || !telegram || !website) {
+        if (!accountId || !name || !about || !tags || !profileImage || !bannerImage || !twitter || !github || !telegram || !website) {
             console.log("Missing details");
             // return res.status(400).json({ error: 'Missing details' });
         }
@@ -52,12 +52,12 @@ router.post("/", async (req, res) => {
         if (tags?.length > 0) profileData.tags = formattedTags;
 
         const data = {
-            [accountID]: convertToStringLeaves({
+            [accountId]: convertToStringLeaves({
                 profile: profileData
             })
         };
 
-        const storage = await getAvailableStorage(accountID);
+        const storage = await getAvailableStorage(accountId);
         const availableBytes = Big(storage.available_bytes || '0');
 
         let currentData = {};
@@ -108,7 +108,7 @@ router.post("/", async (req, res) => {
         }];
 
         const transactionsData = encodeURIComponent(JSON.stringify(transactionData));
-        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${accountID}`);
+        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${accountId}`);
         console.log("Transaction Data: ", transactionData);
         console.log("Transactions Data Encoded: ", transactionsData);
         console.log("Callback URL: ", callbackUrl);

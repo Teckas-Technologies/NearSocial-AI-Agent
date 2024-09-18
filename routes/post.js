@@ -9,8 +9,8 @@ router.post("/", async (req, res) => {
         const body = req.body;
         console.log("body >>", body);
 
-        const { accountID, content, imageUrl } = body;
-        if (!accountID || !content) {
+        const { accountId, content, imageUrl } = body;
+        if (!accountId || !content) {
             console.log("Missing accountId or content");
             return res.status(400).json({ error: "Missing accountId or content" });
         }
@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
         }
 
         const data = {
-            [accountID]: {
+            [accountId]: {
                 post: {
                     main: JSON.stringify(postData.main)
                 },
@@ -51,11 +51,11 @@ router.post("/", async (req, res) => {
         // const indexPostValueSize = calculateTextSizeInBytes(data[accountId].index.post);
         const contentSize = calculateTextSizeInBytes(content);
         const imageSize = calculateTextSizeInBytes(imageCid);
-        const accountSize = calculateTextSizeInBytes(accountID);
+        const accountSize = calculateTextSizeInBytes(accountId);
 
         const totalSize = contentSize + imageSize + accountSize;
 
-        const availableStorage = await getAvailableStorage(accountID);
+        const availableStorage = await getAvailableStorage(accountId);
         const availableBytes = availableStorage?.available_bytes || 0;
         let amount = 0;
         if (totalSize > availableBytes) {
@@ -86,7 +86,7 @@ router.post("/", async (req, res) => {
         }];
 
         const transactionsData = encodeURIComponent(JSON.stringify(transactionData));
-        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${accountID}`);
+        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${accountId}`);
 
         console.log("Transaction Data: ", transactionData);
         console.log("Transactions Data Encoded: ", transactionsData);

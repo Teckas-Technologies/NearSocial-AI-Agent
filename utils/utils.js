@@ -4,14 +4,14 @@ const Big = require('big.js');
 const StorageCostPerByte = Big(10).pow(19);
 
 // Function to get available storage for a specific account
-const getAvailableStorage = async (accountID, networkId = 'mainnet') => {
-    console.log("Account Id : ", accountID)
+const getAvailableStorage = async (accountId, networkId = 'mainnet') => {
+    console.log("Account Id : ", accountId)
     const providerUrl = `https://rpc.${networkId}.near.org`;
     const provider = new providers.JsonRpcProvider({ url: providerUrl });
 
     try {
         // Query the 'storage_balance_of' method on the NEAR Social DB contract
-        const args = { account_id: accountID };
+        const args = { account_id: accountId };
         const res = await provider.query({
             request_type: 'call_function',
             account_id: "social.near",
