@@ -5,10 +5,10 @@ const axios = require('axios');
 
 const uploadIPFS = async (fileUrl) => {
     try {
-        const file = await urlToFile(fileUrl, 'image.jpg');
+        // const file = await urlToFile(fileUrl, 'image.jpg');
 
         const formData = new FormData();
-        formData.append('file', file);
+        // formData.append('file', file);
 
         const res = await axios.post('https://ipfs.near.social/add', formData, {
             headers: {
@@ -67,29 +67,29 @@ const uploadIPFS = async (fileUrl) => {
 //     }
 // };
 
-const urlToFile = async (fileUrl, fileName) => {
-    try {
-        const fetch = (await import('node-fetch')).default;
-        const response = await fetch(fileUrl);
+// const urlToFile = async (fileUrl, fileName) => {
+//     try {
+//         const fetch = (await import('node-fetch')).default;
+//         const response = await fetch(fileUrl);
 
-        // Check if the request was successful
-        if (!response.ok) {
-            throw new Error(`Failed to fetch image: ${response.statusText}`);
-        }
+//         // Check if the request was successful
+//         if (!response.ok) {
+//             throw new Error(`Failed to fetch image: ${response.statusText}`);
+//         }
 
-        // Convert the response to a Blob
-        const blob = await response.blob();
+//         // Convert the response to a Blob
+//         const blob = await response.blob();
 
-        // Create a File object from the Blob
-        const file = new File([blob], fileName, { type: blob.type });
+//         // Create a File object from the Blob
+//         const file = new File([blob], fileName, { type: blob.type });
 
-        console.log("File >> ", file)
+//         console.log("File >> ", file)
 
-        return file;
-    } catch (error) {
-        console.error('Error converting URL to file:', error.message);
-        throw error;
-    }
-};
+//         return file;
+//     } catch (error) {
+//         console.error('Error converting URL to file:', error.message);
+//         throw error;
+//     }
+// };
 
 module.exports = { uploadIPFS };

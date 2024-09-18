@@ -17,15 +17,15 @@ router.post("/", async (req, res) => {
 
         let imageCid;
 
-        if (imageUrl) {
-            imageCid = await uploadIPFS(imageUrl);
-        }
+        // if (imageUrl) {
+        //     imageCid = await uploadIPFS(imageUrl);
+        // }
 
         const postData = {
             main: {}
         };
 
-        if (imageUrl) postData.main.image = { ipfs_cid: imageCid };
+        // if (imageUrl) postData.main.image = { ipfs_cid: imageCid };
         if (content) {
             postData.main.type = "md";
             postData.main.text = content;
