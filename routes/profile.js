@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { format } = require('near-api-js').utils;
-const { getAvailableStorage, estimateDataSize, convertToStringLeaves, StorageCostPerByte, bigMax, fetchCurrentData, removeDuplicates, calculateNearAmount } = require('../utils/utils');
+const { SOCIAL_DB_CONTRACT_ID } = require('../utils/constant');
+const { getSocialProfile, getAvailableStorage, estimateDataSize, convertToStringLeaves, StorageCostPerByte, bigMax, fetchCurrentData, removeDuplicates, calculateNearAmount } = require('../utils/utils');
 const Big = require('big.js');
 
 const MinStorageBalance = StorageCostPerByte.mul(2000);
@@ -9,6 +10,20 @@ const InitialAccountStorageBalance = StorageCostPerByte.mul(500);
 const ExtraStorageBalance = StorageCostPerByte.mul(500);
 const StorageForPermission = StorageCostPerByte.mul(500);
 const CustomStorage = StorageCostPerByte.mul(500);
+
+router.get("/", async (req, res) => {
+    try {
+        const accountId = req.query.id;
+        if (!accountId) {
+            return res.status(400).json({ error: 'Account Id not present!' });
+        }
+        const profile = await getSocialProfile(accountId);
+        return res.status(200).json({ profile: profile });
+    } catch (error) {
+        console.error("Error >> ", error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 router.post("/", async (req, res) => {
     try {
@@ -92,7 +107,7 @@ router.post("/", async (req, res) => {
         }
         console.log(`amt:${amount},size:${dataSize},availBytes:${availableBytes},data:${JSON.stringify(data)},`);
 
-        const contractId = "social.near";
+        const contractId = SOCIAL_DB_CONTRACT_ID;
         const method = 'set';
         const args = { data: data };
         const gas = '30000000000000';

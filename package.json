@@ -2,7 +2,7 @@
   "name": "mintbase-ai-agent",
   "version": "1.0.0",
   "description": "AI agent for bitte wallet operations become easier",
-  "main": "/api/app.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js"
   },

@@ -14,6 +14,6 @@ app.use('/api/profile', profileRouter);
 app.use('/api/post', postRouter);
 app.get("/", (req, res) => res.send("Express on Vercel"));
 
-app.listen(9000, () => {
-    console.log("AI Agent Running on port : 9000")
+app.listen(8080, () => {
+    console.log("AI Agent Running on port : 8080")
 })

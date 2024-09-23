@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { format } = require('near-api-js').utils;
 const { uploadIPFS } = require('../utils/imageUtils');
+const { SOCIAL_DB_CONTRACT_ID } = require('../utils/constant');
 const { getAvailableStorage, calculateTextSizeInBytes,StorageCostPerByte, estimateDataSize, calculateNearAmount } = require('../utils/utils');
 const Big = require('big.js');
 
@@ -78,7 +79,7 @@ router.post("/", async (req, res) => {
         }
         console.log(`amt:${amount},size:${totalSize},availBytes:${availableBytes},data:${JSON.stringify(data)},`);
 
-        const contractId = "social.near";
+        const contractId = SOCIAL_DB_CONTRACT_ID;
         const method = 'set';
         const args = {
             data: data
