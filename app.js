@@ -6,7 +6,7 @@ require('dotenv').config();
 const app = express();
 app.use(bodyParser.json());
 // app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('./public'));
 
 const profileRouter = require('./routes/profile');
 const postRouter = require('./routes/post');
