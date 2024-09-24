@@ -9,10 +9,16 @@ app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));
 
 const profileRouter = require('./routes/profile');
 const postRouter = require('./routes/post');
+const followRouter = require('./routes/follow');
 
 app.use('/api/profile', profileRouter);
 app.use('/api/post', postRouter);
+app.use('/api/follow', followRouter);
 app.get("/", (req, res) => res.send("Express on Vercel"));
+app.get('/.well-known/ai-plugin.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.sendFile(path.join(__dirname, '.well-known/ai-plugin.json'));
+});
 
 app.listen(8080, () => {
     console.log("AI Agent Running on port : 8080")

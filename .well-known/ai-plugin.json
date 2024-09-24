@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://cc68-2405-201-e062-f083-54b-643a-4f57-f74b.ngrok-free.app"
+            "url": "https://5420-2405-201-e062-f023-a5d5-cff5-1a27-142a.ngrok-free.app"
         }
     ],
     "x-mb": {
@@ -118,7 +118,7 @@
             },
             "get": {
                 "summary": "Get social profile by account ID",
-                "description": "Fetches a user's social profile by their account ID.",
+                "description": "Fetches a user's social profile by their account Id.",
                 "operationId": "getProfile",
                 "parameters": [
                     {
@@ -127,7 +127,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "The registrant ID to fetch a specific project."
+                        "description": "The account Id to fetch a logged in user's profile."
                     }
                 ],
                 "responses": {

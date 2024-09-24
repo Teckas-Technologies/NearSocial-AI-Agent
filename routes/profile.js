@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { format } = require('near-api-js').utils;
 const { SOCIAL_DB_CONTRACT_ID } = require('../utils/constant');
-const { getSocialProfile, getAvailableStorage, estimateDataSize, convertToStringLeaves, StorageCostPerByte, bigMax, fetchCurrentData, removeDuplicates, calculateNearAmount } = require('../utils/utils');
+const { getSocialProfile, getAvailableStorage} = require('../utils/nearSocialUtils');
+const { estimateDataSize, convertToStringLeaves, StorageCostPerByte, bigMax, fetchCurrentData, removeDuplicates, calculateNearAmount } = require('../utils/utils');
 const Big = require('big.js');
 
 const MinStorageBalance = StorageCostPerByte.mul(2000);

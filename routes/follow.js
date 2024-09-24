@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { format } = require('near-api-js').utils;
-const { uploadIPFS } = require('../utils/imageUtils');
 const { SOCIAL_DB_CONTRACT_ID } = require('../utils/constant');
 const { getAvailableStorage} = require('../utils/nearSocialUtils');
 const { StorageCostPerByte, estimateDataSize, calculateNearAmount } = require('../utils/utils');
@@ -18,42 +17,29 @@ router.post("/", async (req, res) => {
         const body = req.body;
         console.log("body >>", body);
 
-        const { accountId, accountID, content, imageUrl } = body;
+        const { accountId, accountID, recipientId } = body;
         const account = accountId || accountID;
-        if (!account || !content) {
-            console.log("Missing accountId or content");
-            return res.status(400).json({ error: "Missing accountId or content" });
-        }
-
-        let imageCid;
-
-        // if (imageUrl) {
-        //     imageCid = await uploadIPFS(imageUrl);
-        // }
-
-        const postData = {
-            main: {}
-        };
-
-        // if (imageUrl) postData.main.image = { ipfs_cid: imageCid };
-        if (content) {
-            postData.main.type = "md";
-            postData.main.text = content;
+        if (!account || !recipientId) {
+            console.log("Missing accountId or recipientId");
+            return res.status(400).json({ error: "Missing accountId or recipientId" });
         }
 
         const data = {
-            [account]: {
-                post: {
-                    main: JSON.stringify(postData.main)
-                },
-                index: {
-                    post: JSON.stringify({
-                        key: "main",
-                        value: {
-                            type: "md"
-                        }
-                    })
-                }
+            graph: { follow: { [recipientId] : "" } },
+            index: {
+                graph: JSON.stringify({
+                    key: "follow",
+                    value: {
+                        type: "follow",
+                        accountId: recipientId,
+                    },
+                }),
+                notify: JSON.stringify({
+                    key: recipientId,
+                    value: {
+                        type: "follow",
+                    },
+                }),
             },
         };
 
@@ -83,7 +69,7 @@ router.post("/", async (req, res) => {
         const contractId = SOCIAL_DB_CONTRACT_ID;
         const method = 'set';
         const args = {
-            data: data
+            [account]: data,
         };
         const gas = '300000000000000';
         const deposit = format.parseNearAmount(amount.toString());
@@ -102,14 +88,14 @@ router.post("/", async (req, res) => {
         }];
 
         const transactionsData = encodeURIComponent(JSON.stringify(transactionData));
-        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${account}`);
+        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${recipientId}`);
 
         console.log("Transaction Data: ", transactionData);
         console.log("Callback URL: ", callbackUrl);
 
-        const postUrl = `https://wallet.bitte.ai/sign-transaction?transactions_data=${transactionsData}&callback_url=${callbackUrl}`;
-        console.log("Post Url: ", decodeURIComponent(postUrl));
-        res.json({ postUrl: postUrl });
+        const followUrl = `https://wallet.bitte.ai/sign-transaction?transactions_data=${transactionsData}&callback_url=${callbackUrl}`;
+        console.log("Post Url: ", decodeURIComponent(followUrl));
+        res.json({ followUrl: followUrl });
 
     } catch (error) {
         console.error("Error >> ", error);
