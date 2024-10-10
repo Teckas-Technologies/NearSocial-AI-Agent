@@ -101,15 +101,17 @@ router.post("/", async (req, res) => {
             }]
         }];
 
-        const transactionsData = encodeURIComponent(JSON.stringify(transactionData));
-        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${account}`);
+        res.status(200).json({ transactionData: transactionData });
 
-        console.log("Transaction Data: ", transactionData);
-        console.log("Callback URL: ", callbackUrl);
+        // const transactionsData = encodeURIComponent(JSON.stringify(transactionData));
+        // const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${account}`);
 
-        const postUrl = `https://wallet.bitte.ai/sign-transaction?transactions_data=${transactionsData}&callback_url=${callbackUrl}`;
-        console.log("Post Url: ", decodeURIComponent(postUrl));
-        res.json({ postUrl: postUrl });
+        // console.log("Transaction Data: ", transactionData);
+        // console.log("Callback URL: ", callbackUrl);
+
+        // const postUrl = `https://wallet.bitte.ai/sign-transaction?transactions_data=${transactionsData}&callback_url=${callbackUrl}`;
+        // console.log("Post Url: ", decodeURIComponent(postUrl));
+        // res.json({ postUrl: postUrl });
 
     } catch (error) {
         console.error("Error >> ", error);

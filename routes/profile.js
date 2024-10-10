@@ -14,7 +14,7 @@ const CustomStorage = StorageCostPerByte.mul(500);
 
 router.get("/", async (req, res) => {
     try {
-        const accountId = req.query.id;
+        const accountId = req.query.id || req.query.accountId || req.query.accountID;
         if (!accountId) {
             return res.status(400).json({ error: 'Account Id not present!' });
         }
@@ -32,13 +32,18 @@ router.post("/", async (req, res) => {
         console.log("body >>", body);
         
 
-        const { accountId, accountID, name, about, profileImage, bannerImage, twitter, github, telegram, website, tags } = body;
+        const { accountId, accountID, account_id, name, about, profileImage, bannerImage, twitter, github, telegram, website, tags } = body;
 
-        const account = accountId || accountID;
+        const account = accountId || accountID || account_id;
 
         if (!account || !name || !about || !tags || !profileImage || !bannerImage || !twitter || !github || !telegram || !website) {
             console.log("Missing details");
             // return res.status(400).json({ error: 'Missing details' });
+        }
+
+        if (!account) {
+            console.log("Missing accontId");
+            return res.status(400).json({ error: 'Missing accountId' });
         }
 
         if (tags && !Array.isArray(tags)) {
@@ -127,15 +132,17 @@ router.post("/", async (req, res) => {
             }]
         }];
 
-        const transactionsData = encodeURIComponent(JSON.stringify(transactionData));
-        const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${account}`);
-        console.log("Transaction Data: ", transactionData);
-        console.log("Callback URL: ", callbackUrl);
+        return res.status(200).json({ transactionData: transactionData });
 
-        const signUrl = `https://wallet.bitte.ai/sign-transaction?transactions_data=${transactionsData}&callback_url=${callbackUrl}`;
-        console.log("Sign Url: ", decodeURIComponent(signUrl));
+        // const transactionsData = encodeURIComponent(JSON.stringify(transactionData));
+        // const callbackUrl = encodeURIComponent(`https://near.social/mob.near/widget/ProfilePage?accountId=${account}`);
+        // console.log("Transaction Data: ", transactionData);
+        // console.log("Callback URL: ", callbackUrl);
 
-        return res.status(200).json({ profileUrl: signUrl });
+        // const signUrl = `https://wallet.bitte.ai/sign-transaction?transactions_data=${transactionsData}&callback_url=${callbackUrl}`;
+        // console.log("Sign Url: ", decodeURIComponent(signUrl));
+
+        // return res.status(200).json({ profileUrl: signUrl });
 
     } catch (error) {
         console.error("Error >> ", error);
