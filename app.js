@@ -20,6 +20,8 @@ app.get('/.well-known/ai-plugin.json', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/.well-known/ai-plugin.json'));
 });
 
-app.listen(8080, () => {
-    console.log("AI Agent Running on port : 8080")
+const port = process.env.PORT || 8080
+
+app.listen(port, () => {
+    console.log(`AI Agent Running on port : ${port}`)
 })
